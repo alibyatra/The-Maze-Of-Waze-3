@@ -1,10 +1,14 @@
 package gameClient;
 
+import java.io.File;
 import java.io.PrintWriter;
 
 import Server.game_service;
+import dataStructure.edge_data;
+import dataStructure.graph;
+import dataStructure.node_data;
 
-public class KML_Logger<StringBuffer> {
+public class KML_Logger {
 
 	private int level;
 	public StringBuffer str;

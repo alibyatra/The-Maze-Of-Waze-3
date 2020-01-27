@@ -1,8 +1,11 @@
 package Tests;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
 import elements.Robot;
+import utils.Point3D;
 
 public class RobotTest {
 	 static String JSONSTRING = "{\"Robot\":{\"id\":0,\"value\":5,\"src\":7,\"dest\":6,\"speed\":1,\"pos\":\"35.4,32.3,0.0\"}}";

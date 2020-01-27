@@ -8,6 +8,8 @@ import javax.swing.JOptionPane;
 
 import org.json.JSONObject;
 
+import Server.Game_Server;
+import Server.game_service;
 import algorithms.Graph_Algo;
 import dataStructure.DGraph;
 import dataStructure.edge_data;
@@ -26,9 +28,9 @@ public class MyGameGUI {
 	private graph g;
 	private static double minX=0, maxX=0, minY=0, maxY=0;
 	private static int scoreInt = 0, movesInt = 0, levelInt = 0;
-	private String[] RobotsImg = {"pics\\assaf.png","pics\\yossef.png","pics\\moshik.png"};
-	private String[] FruitImg = {"pics\\donut.png","pics\\pizza.png"};
-	private String[] GameImg = {"pics\\x.png","pics\\y.png"};
+	private String[] RobotsImg = {"pics\\mario.png","pics\\luigi.png","pics\\peach.png"};
+	private String[] FruitImg = {"pics\\star.png","pics\\head.png"};
+	private String[] GameImg = {"pics\\theme2.png","pics\\theme.png"};
 	private static KML_Logger kl;
 	private static int game_num;
 	Thread r;
@@ -213,7 +215,7 @@ public class MyGameGUI {
 	private void reDrawRobots() {
 		int i=0;
 		for (Robot ro : d.robotList) {
-			kl.Place_Mark("data/assaf.png",ro.getPos().toString());
+			kl.Place_Mark("data/mario.png",ro.getPos().toString());
 			StdDraw.picture(ro.getPos().x(), ro.getPos().y(), RobotsImg[i%3] , 0.002, 0.001);
 			i++;
 		}

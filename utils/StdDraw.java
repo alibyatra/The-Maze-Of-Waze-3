@@ -61,7 +61,11 @@ import java.io.IOException;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.TreeSet;
 import java.util.NoSuchElementException;
@@ -73,10 +77,19 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.KeyStroke;
+
+import java.sql.Statement;
+import java.sql.Connection;
+import java.sql.DriverManager;
 
 import dataStructure.Node;
 import dataStructure.node_data;
+import gameClient.Json_Updates;
+import gameClient.MyGameGUI;
 import gui.Graph_GUI;
 
 /**
@@ -485,8 +498,9 @@ import gui.Graph_GUI;
 public final class StdDraw implements ActionListener, MouseListener, MouseMotionListener, KeyListener {
 
 
-	private static Graph_GUI gui;
-	public static void setGui(Graph_GUI g) {
+	private static MyGameGUI gui;
+	public static Point3D mouseP;
+	public static void setGui(MyGameGUI g) {
 		gui = g;
 	}
 
@@ -630,7 +644,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	private static JFrame frame;
 
 	// mouse state
-	private static boolean isMousePressed = false;
+	public static boolean isMousePressed = false;
 	private static double mouseX = 0;
 	private static double mouseY = 0;
 
@@ -1658,18 +1672,220 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		}
 	}
 
+	public static final String jdbcUrl="jdbc:mysql://db-mysql-ams3-67328-do-user-4468260-0.db.ondigitalocean.com:25060/oop?useUnicode=yes&characterEncoding=UTF-8&useSSL=false";
+	public static final String jdbcUser="student";
+	public static final String jdbcUserPassword="OOP2020student";
+	static int numGames = 0;
+	static int maxScore = 0;
+	static int lev = 0;
+	static int minMove = Integer.MAX_VALUE;
+
+	public static Integer[][] rows = {
+			{0,290,0},
+			{1,580,0},
+			{3,580,0},
+			{5,500,0},
+			{9,580,0},
+			{11,580,0},
+			{13,580,0},
+			{16,290,0},
+			{19,580,0},
+			{20,290,0},
+			{23,1140,0},
+			{-31,1000,0}
+
+	};
+	public static Integer[][] rankTable = {
+			{0,0},
+			{1,0},
+			{3,0},
+			{5,0},
+			{9,0},
+			{11,0},
+			{13,0},
+			{16,0},
+			{19,0},
+			{20,0},
+			{23,0},
+			{-31,0}
+	};
+	public static ArrayList<Integer> amountForEach = new ArrayList<>();
+	public static ArrayList<Integer> stage = new ArrayList<>();
+
+	public static void numGameLog() {	
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+
+			Connection connection = 
+					DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcUserPassword);
+			Statement statement = connection.createStatement();
+			String allCustomersQuery = "SELECT * FROM Logs;";
+			ResultSet resultSet = statement.executeQuery(allCustomersQuery);
+			numGames =0;
+
+			while(resultSet.next())
+			{
+				//System.out.println("Id: " + resultSet.getInt("UserID")+","+resultSet.getInt("levelID")+",score: "+resultSet.getInt("score")+", moves: "+resultSet.getInt("moves")+", date: "+resultSet.getDate("time"));
+				if(MyGameGUI.Id == resultSet.getInt("UserID")) {
+					numGames++;
+				}
+			}
+			resultSet.close();
+			statement.close();		
+			connection.close();	
+		}
+
+		catch (SQLException sqle) {
+			System.out.println("SQLException: " + sqle.getMessage());
+			System.out.println("Vendor Error: " + sqle.getErrorCode());
+		}
+		catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+	public static void MinePrintLog() {
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+
+			Connection connection = 
+					DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcUserPassword);
+			Statement statement = connection.createStatement();
+			String allCustomersQuery = "SELECT * FROM Logs WHERE UserID ="+MyGameGUI.Id+";";
+			ResultSet resultSet = statement.executeQuery(allCustomersQuery);
+			if(stage.size()!=12) {
+				stage.add(0);
+				stage.add(1);
+				stage.add(3);
+				stage.add(5);
+				stage.add(9);
+				stage.add(11);
+				stage.add(13);
+				stage.add(16);
+				stage.add(19);
+				stage.add(20);
+				stage.add(23);
+				stage.add(-31);
+
+			}
+			while(resultSet.next()) {
+				maxScore =  resultSet.getInt("score");
+				minMove = resultSet.getInt("moves");
+				lev = resultSet.getInt("levelID");
+				if((maxScore > rows[stage.indexOf(lev)][2]) && (minMove <= rows[stage.indexOf(lev)][1]))
+					rows[stage.indexOf(lev)][2] = maxScore;
+			}
+
+			resultSet.close();
+			statement.close();		
+			connection.close();	
+		}
+
+		catch (SQLException sqle) {
+			System.out.println("SQLException: " + sqle.getMessage());
+			System.out.println("Vendor Error: " + sqle.getErrorCode());
+		}
+		catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		catch (Exception x) {
+			System.exit(0);			
+		}
+	}
 
 	/**
 	 * This method cannot be called directly.
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		
+		switch (e.getActionCommand()) {
+		case "Save":
 		FileDialog chooser = new FileDialog(StdDraw.frame, "Use a .png or .jpg extension", FileDialog.SAVE);
 		chooser.setVisible(true);
 		String filename = chooser.getFile();
 		if (filename != null) {
 			StdDraw.save(chooser.getDirectory() + File.separator + chooser.getFile());
 		}
+	case "How much games we played in the server":
+		numGameLog();
+		JOptionPane.showMessageDialog(null, "We played "+numGames+" games.","Messege",1);
+
+
+		break;
+
+	case "Our max game":
+		if(Json_Updates.mu==-1)
+			Json_Updates.mu = 0;
+		JOptionPane.showMessageDialog(null, "Max user level: "+Json_Updates.mu+".","Messege",1);
+
+		break;
+	case "Our higher score for each level":
+		MinePrintLog();
+
+		Object[] col =  {"Stage","Max moves allowed","Best Score"};
+		JTable table = new JTable(rows,col);
+		table.setRowHeight(36);
+		table.setFont(new Font("Omer", Font.BOLD, 20));
+		JOptionPane.showMessageDialog(null, new JScrollPane(table));
+
+
+		break;
+
+	case "Our rank for each level":
+		int amount;
+
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			MinePrintLog();
+			System.out.println(Arrays.deepToString(rows));
+			Connection connection = 
+					DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcUserPassword);
+			Statement statement = connection.createStatement();
+			String sql = null;
+			ResultSet resultSet = null;
+			for(Integer in : stage) {
+				sql = "SELECT UserID,MAX(score) FROM Logs score WHERE UserID<>0 AND UserID<>999 AND UserID<>"+MyGameGUI.Id+
+						" AND moves<="+rows[stage.indexOf(in)][1]+" AND score>"+ rows[stage.indexOf(in)][2]+" AND LevelID="+stage.indexOf(in)+" Group by UserID;";
+				resultSet= statement.executeQuery(sql);
+				amount = 1;
+				while(resultSet.next()){
+					amount++;
+				}
+				rankTable[stage.indexOf(in)][1] = amount;
+			}
+			Object[] rankCol =  {"Stage","Our Rank"};
+
+			JTable rankTab = new JTable(rankTable,rankCol);
+			rankTab.setRowHeight(36);
+			rankTab.setFont(new Font("Omer", Font.BOLD, 20));
+			JOptionPane.showMessageDialog(null, new JScrollPane(rankTab));
+
+			resultSet.close();
+			statement.close();		
+			connection.close();	
+		}
+
+		catch (SQLException sqle) {
+			System.out.println("SQLException: " + sqle.getMessage());
+			System.out.println("Vendor Error: " + sqle.getErrorCode());
+			System.exit(0);			
+
+		}
+		catch (ClassNotFoundException ex) {
+			ex.printStackTrace();
+			System.exit(0);			
+
+		}
+		catch (Exception x) {
+			System.exit(0);			
+		}
+
+
+		break;
+
+	default:
+		break;
+	}
 	}
 
 

@@ -39,37 +39,37 @@ public class Edge implements edge_data, Serializable{
 		this.info = other.info;
 	}
 	
-	@Override
+	
 	public int getSrc() {
 		return src;
 	}
 
-	@Override
+	
 	public int getDest() {
 		return dest;
 	}
 
-	@Override
+	
 	public double getWeight() {
 		return weigth;
 	}
 
-	@Override
+	
 	public String getInfo() {
 		return info;
 	}
 
-	@Override
+	
 	public void setInfo(String s) {
 			info = s;
 	}
 
-	@Override
+	
 	public int getTag() {
 		return tag;
 	}
 
-	@Override
+	
 	public void setTag(int t) {
 			tag = t;
 	}

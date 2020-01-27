@@ -1,8 +1,11 @@
 package Tests;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
 import elements.Fruit;
+import utils.Point3D;
 
 public class FruitTest {
 	static String JSONSTRING ="{\"Fruit\":{\"value\":8,\"type\":-1,\"pos\":\"35.4,32.3,0.0\"}}";

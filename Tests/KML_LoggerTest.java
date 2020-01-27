@@ -1,8 +1,12 @@
 package Tests;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
+import Server.Game_Server;
 import Server.game_service;
+import gameClient.KML_Logger;
 
 public class KML_LoggerTest {
 

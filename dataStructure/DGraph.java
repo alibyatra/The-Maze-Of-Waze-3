@@ -18,6 +18,7 @@ public class DGraph implements graph, Serializable
 	public HashMap<Integer, HashMap<Integer,edge_data>> edgesMap = new HashMap<Integer, HashMap<Integer,edge_data>>();
 	public ArrayList<Fruit> fruitList = new ArrayList<Fruit>();
 	public ArrayList<Robot> robotList = new ArrayList<Robot>();
+	public ArrayList<edge_data> allEdges = new ArrayList<edge_data>();
 	
 	@Override
 	public node_data getNode(int key) {

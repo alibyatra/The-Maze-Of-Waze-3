@@ -43,47 +43,47 @@ public class Node implements node_data, Serializable{
 		this.tag = other.tag;
 	}
 
-	@Override
+	
 	public int getKey() {
 		return key;
 	}
 
-	@Override
+	
 	public Point3D getLocation() {
 		return location;
 	}
 
-	@Override
+	
 	public void setLocation(Point3D p) {
 		location = p;
 	}
 
-	@Override
+	
 	public double getWeight() {
 		return weight;
 	}
 
-	@Override
+	
 	public void setWeight(double w) {
 		weight = w;
 	}
 
-	@Override
+	
 	public String getInfo() {
 		return info;
 	}
 
-	@Override
+	
 	public void setInfo(String s) {
 		info = s;
 	}
 
-	@Override
+	
 	public int getTag() {
 		return tag;
 	}
 
-	@Override
+	
 	public void setTag(int t) {
 		tag = t;
 	}

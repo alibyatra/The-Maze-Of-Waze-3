@@ -3,7 +3,13 @@ package gameClient;
 import dataStructure.DGraph;
 import elements.Fruit;
 import dataStructure.edge_data;
+import dataStructure.node_data;
 import elements.Fruit_Comperator;
+import elements.Robot;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import Server.Game_Server;
 import Server.game_service;
 
@@ -15,49 +21,48 @@ public class AutoGame {
 	private game_service game = Game_Server.getServer(Json_Updates.mu);
 	private DGraph d = new DGraph();
 
-
-	public public AutoGame() {
+	public AutoGame() {
 		this.d = new DGraph();
 		this.my = new MyGameGUI();
 	}
-	
 	public AutoGame(MyGameGUI my) {
+		// TODO Auto-generated constructor stub
 		this.my = my;
 		this.d = my.getDgraph();
 		this.game = my.getGame();
 	}
-	
+
 	public void setGui(MyGameGUI g) {
 		my = g;
 	}
-	
+
 	public MyGameGUI getGUI() {
 		return my;
 	}
-	
+
 	public game_service getGame() {
 		return game;
 	}
-	
+
 	public void setGame(game_service game) {
 		this.game = game;
 	}
-	
+
 	public DGraph getD() {
 		return d;
 	}
-	
+
 	public void setD(DGraph d) {
 		this.d = d;
 	}
 
-	
+
 	public void allFruitToEdges(List<Fruit> list) {
 		for(Fruit f : list) {
 			FruitToEdge(f);
 		}
 	}
-	
+
 	public void FruitToEdge(Fruit f) {
 		for(edge_data edge : d.allEdges) {
 			int src=-2;
@@ -91,7 +96,7 @@ public class AutoGame {
 		}
 	}
 
-	
+
 	public void addAutoRobot(){
 		int src =0;
 		int dest =0;
@@ -137,7 +142,7 @@ public class AutoGame {
 		}
 		return left;
 	}
-	
+
 	private List<Fruit> rightZone(List<Fruit> list){
 		ArrayList<Fruit> right = new ArrayList<Fruit>();
 		for(Fruit f: list) {
@@ -146,7 +151,7 @@ public class AutoGame {
 		}
 		return right;
 	}
-	
+
 	public void AutoNextNode(List<Robot> list) {
 		Fruit closest = null;
 		ArrayList<Fruit> left = (ArrayList<Fruit>) leftZone(d.fruitList);
@@ -156,20 +161,20 @@ public class AutoGame {
 		ArrayList<node_data> nodeList = new ArrayList<node_data>();
 		for(Robot r : list) {
 			if(list.size()>1) {
-			if(r.getId()==1) {
-				if(!left.isEmpty())
-					closest= closestFruit(r, left);
-			}
-			else if(r.getId()==2) {
-				if(!right.isEmpty())
-					closest= closestFruit(r, right);
+				if(r.getId()==1) {
+					if(!left.isEmpty())
+						closest= closestFruit(r, left);
+				}
+				else if(r.getId()==2) {
+					if(!right.isEmpty())
+						closest= closestFruit(r, right);
+				}
+				else
+					closest = closestFruit(r,d.fruitList);
 			}
 			else
 				closest = closestFruit(r,d.fruitList);
-			}
-			else
-			closest = closestFruit(r,d.fruitList);
-			
+
 			double fromFruit = r.getPos().distance2D(closest.getPos());
 			if(fromFruit<0.0013) 
 				MyGameGUI.sleepTime = 60; //near the fruit
